@@ -24,7 +24,7 @@ export default class PostsList extends Component {
     console.log(filteredPosts)
     return (
       <div>
-        <ul className="media-list">
+        <ul >
           { filteredPosts.map(post => <Post post={post} key={post.id} />) }
         </ul>
         {/* <NewPost /> */}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export default function Post (props) {
 
@@ -8,7 +9,10 @@ export default function Post (props) {
     <li>
       <div>
       <h3>{ post.title }</h3>
-        { post.category }
+      <NavLink to={`/categories/${post.category}`}>
+          <span>{ post.category }</span>
+          </NavLink>
+
       </div>
       <div >
         <h4>{ post.author }</h4>

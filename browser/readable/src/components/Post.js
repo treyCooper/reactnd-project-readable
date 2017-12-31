@@ -8,13 +8,15 @@ export default function Post (props) {
   return (
     <li>
       <div>
+      <NavLink to={`/${post.category}/${post.id}`}>
       <h3>{ post.title }</h3>
+      </NavLink>
       <NavLink to={`/categories/${post.category}`}>
           <span>{ post.category }</span>
           </NavLink>
 
       </div>
-      <div >
+      <div>
         <h4>{ post.author }</h4>
         { post.body }
       </div>

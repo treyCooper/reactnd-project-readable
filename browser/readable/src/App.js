@@ -5,6 +5,7 @@ import axios from 'axios';
 import RootPostsList from './components/RootPostsList';
 import CategoryList from './components/CategoryList';
 import CategoryPostsList from './components/CategoryPostsList';
+import PostDetail from './components/PostDetail';
 import { Route, Switch } from 'react-router-dom';
 class App extends Component {
 
@@ -14,7 +15,8 @@ class App extends Component {
         <CategoryList />
         <main>
           <Switch>
-            <Route path="/categories/:category" component={CategoryPostsList} />
+            <Route exact path="/categories/:category" component={CategoryPostsList} />
+            <Route path="/:category/:post_id" component={PostDetail}/>
             <Route path="/" component={RootPostsList} />
           </Switch>
         </main>

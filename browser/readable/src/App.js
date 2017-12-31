@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
 import RootPostsList from './components/RootPostsList';
 import CategoryList from './components/CategoryList';
 import CategoryPostsList from './components/CategoryPostsList';

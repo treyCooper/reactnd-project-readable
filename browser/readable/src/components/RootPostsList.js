@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Post from './Post';
-//import NewPost from './NewPost';
+import NewPost from './NewPost';
 import axios from 'axios';
 
 export default class RootPostsList extends Component {
@@ -26,7 +26,7 @@ export default class RootPostsList extends Component {
         <ul>
           { posts.map(post => <Post post={post} key={post.id} />) }
         </ul>
-        {/* <NewPost /> */}
+        <NewPost />
       </div>
     );
   }

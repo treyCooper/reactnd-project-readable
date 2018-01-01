@@ -1,5 +1,4 @@
 import { createStore } from 'redux';
-import uuid from 'uuid';
 
 const GOT_POSTS = 'GOT_POSTS';
 const GOT_NEW_POST = 'GOT_NEW_POST';

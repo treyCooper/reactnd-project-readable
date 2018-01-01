@@ -37,7 +37,6 @@ export default class NewMessageEntry extends Component {
   handleSubmit (evt) {
     evt.preventDefault();
     const { title, author, category, body } = this.state;
-    const id = uuid();
     const data = {
       title: title,
       category: category,
@@ -67,7 +66,6 @@ export default class NewMessageEntry extends Component {
           <div>
             <p>Title</p>
             <input
-              className="form-control"
               type="text"
               name="title"
               value={title}
@@ -78,7 +76,6 @@ export default class NewMessageEntry extends Component {
           <div>
             <p>Author</p>
             <input
-              className="form-control"
               type="text"
               name="author"
               value={author}
@@ -89,7 +86,6 @@ export default class NewMessageEntry extends Component {
           <div>
             <p>Category</p>
             <input
-              className="form-control"
               type="text"
               name="category"
               value={category}
@@ -100,7 +96,6 @@ export default class NewMessageEntry extends Component {
           <div>
             <p>Body</p>
             <textarea
-              className="form-control"
               type="text"
               name="body"
               value={body}

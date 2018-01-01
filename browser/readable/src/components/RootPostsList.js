@@ -26,6 +26,8 @@ export default class RootPostsList extends Component {
     this.unsubscribe();
   }
 
+
+
   render () {
 
     const posts = this.state.posts;
@@ -33,7 +35,11 @@ export default class RootPostsList extends Component {
     return (
       <div>
         <ul>
-          { posts.map(post => <Post post={post} key={post.id} />) }
+          { posts.map(post => {
+            console.log('postId', post.id)
+          return <Post post={post} key={post.id} />
+         })
+        }
         </ul>
         <NewPost />
       </div>

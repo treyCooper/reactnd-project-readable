@@ -21,7 +21,6 @@ export default class Post extends Component {
     // this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
     const { title, author, category, body } = this.props.post;
     this.setState(() => ({ title, category, author, body }))
-    console.log('this.state', this.state)
   }
 
 
@@ -31,7 +30,6 @@ export default class Post extends Component {
       this.setState({
         [evt.target.name]: value
       });
-    console.log("EditPost", this.state)
   }
 
   handleSubmit (evt) {
@@ -45,7 +43,6 @@ export default class Post extends Component {
       timestamp: Date.now()
   }
 
-  console.log('data', data)
   axios.put(`http://localhost:3001/posts/${id}`, data, {
       headers: {
         'Authorization': 'readable-trey',
@@ -58,8 +55,8 @@ export default class Post extends Component {
 
   }
 
+
   render () {
-    console.log(this.props)
     if (!this.state.showEditView) {
   const { title, author, category, body, id } = this.props.post;
   return  (
@@ -78,6 +75,7 @@ export default class Post extends Component {
         { body }
       </div>
       <button onClick={() => this.setState({showEditView: true})}>Edit</button>
+      <button onClick={() => this.props.handleDelete(id)}>Delete</button>
       </li>
   )}
    else {

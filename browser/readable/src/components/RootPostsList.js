@@ -71,14 +71,17 @@ export default class RootPostsList extends Component {
 
   render () {
 
-    const posts = this.state.posts;
-
+    const allPosts = this.state.posts;
+    console.log('routeprops', this.props.match.params.category)
+    const { category } = this.props.match.params
+    const posts = category ? allPosts.filter(post => post.category === category) : allPosts;
     return (
       <div>
+        <h1>{category ? `${category.charAt(0).toUpperCase() + category.substr(1)} Posts` : 'All Posts'}</h1>
         <ul>
-          { posts.map(post => {
+          { posts.length ? posts.map(post => {
           return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
-         })
+         }) : `There are currently no posts in the ${category} category.`
         }
         </ul>
         <NewPost />

@@ -76,20 +76,20 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
       }
 
   render() {
-  const { singlePost, comments } = this.state
-  const post = singlePost
-  return (
-    <div>
-      <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
-      <div >
-        <h4>Comments</h4>
-        <ul>
-          { comments.map(comment => <Comment comment={comment} key={comment.id} />) }
-        </ul>
+    const { singlePost, comments } = this.state
+    const post = singlePost
+    return (
+      <div>
+        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
+        <div >
+          <h4>Comments</h4>
+          <ul>
+            { comments.map(comment => <Comment comment={comment} key={comment.id} />) }
+          </ul>
+        </div>
       </div>
-    </div>
-  );
-}
+    )
+  }
 }
 
 

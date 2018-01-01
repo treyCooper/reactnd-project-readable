@@ -54,7 +54,13 @@ export default class NewMessageEntry extends Component {
       }
     )
     .then(res => res.data)
-    .then(post => store.dispatch(gotNewPost(post)));
+    .then(post => store.dispatch(gotNewPost(post)))
+    .then(() => this.setState({
+      title: '',
+      category: '',
+      author: '',
+      body: ''
+    }))
   }
 
   render () {

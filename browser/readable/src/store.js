@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 
 const GOT_POSTS = 'GOT_POSTS';
+const GOT_SINGLE_POST = 'GOT_SINGLE_POST';
 const GOT_NEW_POST = 'GOT_NEW_POST';
 const EDIT_POST = 'EDIT_POST';
 const DELETE_POST = 'DELETE_POST';
@@ -9,6 +10,13 @@ export const gotPosts = function (posts) {
   return {
     type: GOT_POSTS,
     posts: posts
+  }
+}
+
+export const gotSinglePost = function (post) {
+  return {
+    type: GOT_SINGLE_POST,
+    post: post
   }
 }
 
@@ -36,13 +44,16 @@ export const deletePost = function (post) {
 const initialState = {
   posts: [],
   singlePost: {},
-  comments: {}
+  comments: []
 }
 
 function reducer (state = initialState, action) {
   switch (action.type) {
     case GOT_POSTS:
       return {...state, posts: action.posts}
+
+    case GOT_SINGLE_POST:
+      return {...state, singlePost: action.post}
 
     case GOT_NEW_POST:
       return {
@@ -55,12 +66,12 @@ function reducer (state = initialState, action) {
         action.post.id === post.id ? action.post : post
       ));
       return {
-        ...state, posts: posts
+        ...state, posts: posts, singlePost: action.post
       }
 
       case DELETE_POST:
         return {
-          ...state, posts: state.posts.filter(post => post.id !== action.post.id)
+          ...state, posts: state.posts.filter(post => post.id !== action.post.id), singlePost: {}
         }
 
     default:

@@ -12,9 +12,11 @@ export default class Post extends Component {
       body: ''
     }
     this.handleChange = this.handleChange.bind(this);
+    this.toEditView = this.toEditView.bind(this);
   }
 
   componentDidMount() {
+    console.log('PRRROOPPS', this.props)
     const { title, author, category, body } = this.props.post;
     this.setState(() => ({ title, category, author, body }))
   }
@@ -25,6 +27,11 @@ export default class Post extends Component {
       this.setState({
         [evt.target.name]: value
       });
+  }
+
+  toEditView () {
+    const { title, author, category, body } = this.props.post;
+    this.setState(() => ({ title, category, author, body, showEditView: true }))
   }
 
   render () {
@@ -50,13 +57,14 @@ export default class Post extends Component {
           <button onClick={() => this.props.handleVote(id, 'downVote')}>Down Vote</button>
           <button onClick={() => this.props.handleVote(id, 'upVote')}>Up Vote</button>
         </div>
-      <button onClick={() => this.setState({showEditView: true})}>Edit</button>
+      <button onClick={this.toEditView}>Edit</button>
       <button onClick={() => this.props.handleDelete(id)}>Delete</button>
 
       </li>
   )}
    else {
     const { title, author, category, body } = this.state;
+    console.log('STATEE', this.state)
     const { id } = this.props.post
   return (
     <li>

@@ -20,6 +20,7 @@ export default class PostsList extends Component {
 
     const category = this.props.match.params.category;
     const posts = this.state.posts;
+    console.log("posts", posts)
     const filteredPosts = posts.filter(post => post.category === category);
     console.log(filteredPosts)
     return (

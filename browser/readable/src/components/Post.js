@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import store, { editPost } from '../store';
-import axios from 'axios';
 
 export default class Post extends Component {
   constructor (props) {
@@ -14,11 +12,9 @@ export default class Post extends Component {
       body: ''
     }
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    // this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
     const { title, author, category, body } = this.props.post;
     this.setState(() => ({ title, category, author, body }))
   }
@@ -31,30 +27,6 @@ export default class Post extends Component {
         [evt.target.name]: value
       });
   }
-
-  handleSubmit (evt) {
-    evt.preventDefault();
-    const { title, author, category, body, id } = this.state;
-    const data = {
-      title: title,
-      category: category,
-      author: author,
-      body: body,
-      timestamp: Date.now()
-  }
-
-  axios.put(`http://localhost:3001/posts/${id}`, data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        }
-      }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(editPost(post)))
-    .then(() => window.location.reload())
-
-  }
-
 
   render () {
     if (!this.state.showEditView) {
@@ -80,6 +52,7 @@ export default class Post extends Component {
   )}
    else {
     const { title, author, category, body } = this.state;
+    const { id } = this.props.post
   return (
     <li>
       <div>
@@ -123,7 +96,11 @@ export default class Post extends Component {
             />
           </div>
           <span>
-        <button type='submit' onClick={this.handleSubmit}>Submit Edit</button>
+        <button type='submit' onClick={() => {
+          this.props.handleEdit(title, author, category, body, id)
+          this.setState({showEditView: false})
+        }
+          }>Submit</button>
       </span>
     </li>
   )

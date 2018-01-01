@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
 import axios from 'axios';
-import store, { gotPosts, deletePost } from '../store';
+import store, { gotPosts, deletePost, editPost } from '../store';
 
 export default class RootPostsList extends Component {
 
@@ -29,8 +29,18 @@ export default class RootPostsList extends Component {
     this.unsubscribe();
   }
 
-  handleEdit () {
-    this.setState(store.getState())
+  handleEdit (title, author, category, body, id) {
+
+    const data = { title, author, category, body, id, timestamp: Date.now() };
+    console.log('data', data)
+  axios.put(`http://localhost:3001/posts/${id}`, data, {
+      headers: {
+        'Authorization': 'readable-trey',
+        }
+      }
+    )
+    .then(res => res.data)
+    .then(post => store.dispatch(editPost(post)))
   }
 
   handleDelete (id) {
@@ -50,7 +60,7 @@ export default class RootPostsList extends Component {
       <div>
         <ul>
           { posts.map(post => {
-          return <Post post={post} key={post.id} handleDelete={this.handleDelete}/>
+          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit}/>
          })
         }
         </ul>

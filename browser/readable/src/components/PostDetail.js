@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
-import Comment from './Comment'
-
+import Comment from './Comment';
+import Post from './Post';
   export default class PostDetail extends Component {
 
       constructor () {
@@ -14,6 +13,7 @@ import Comment from './Comment'
       }
 
       componentDidMount(){
+        console.log('deatailProps', this.props)
         axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}`, { headers: { 'Authorization': 'readable-trey'}})
         .then(res => res.data)
         .then(post => this.setState({ post }))
@@ -31,17 +31,7 @@ import Comment from './Comment'
   const { post, comments } = this.state
   return (
     <div>
-      <div>
-      <h3>{ post.title }</h3>
-      <NavLink to={`/categories/${post.category}`}>
-          <span>{ post.category }</span>
-          </NavLink>
-
-      </div>
-      <div >
-        <h4>{ post.author }</h4>
-        { post.body }
-      </div>
+      <Post post={post} key={post.id} />
       <div >
         <h4>Comments</h4>
         <ul>

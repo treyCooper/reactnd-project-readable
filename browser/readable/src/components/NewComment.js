@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import store, { gotNewPost } from '../store';
+import store, { gotNewComment } from '../store';
 import uuid from 'uuid';
 import axios from 'axios';
 
@@ -8,8 +8,6 @@ export default class NewMessageEntry extends Component {
   constructor() {
     super();
     this.state = {
-      title: '',
-      category: '',
       author: '',
       body: ''
     }
@@ -35,48 +33,35 @@ export default class NewMessageEntry extends Component {
 
   handleSubmit (evt) {
     evt.preventDefault();
-    const { title, author, category, body } = this.state;
+    const { author, body } = this.state;
     const data = {
-      title: title,
-      category: category,
       author: author,
       body: body,
       timestamp: Date.now(),
-      id: uuid()
+      id: uuid(),
+      parentId: this.props.parentId
   }
 
-  axios.post('http://localhost:3001/posts', data, {
+  axios.post('http://localhost:3001/comments', data, {
       headers: {
         'Authorization': 'readable-trey',
         }
       }
     )
     .then(res => res.data)
-    .then(post => store.dispatch(gotNewPost(post)))
+    .then(comment => store.dispatch(gotNewComment(comment)))
     .then(() => this.setState({
-      title: '',
-      category: '',
       author: '',
       body: ''
     }))
   }
 
   render () {
-    const { title, author, category, body } = this.state;
+    const { author, body } = this.state;
     return (
       <form>
         <div>
-          <h4>Add New Post</h4>
-          <div>
-            <p>Title</p>
-            <input
-              type="text"
-              name="title"
-              value={title}
-              onChange={this.handleChange}
-              placeholder="Title"
-            />
-          </div>
+          <h4>Add New Comment</h4>
           <div>
             <p>Author</p>
             <input
@@ -85,16 +70,6 @@ export default class NewMessageEntry extends Component {
               value={author}
               onChange={this.handleChange}
               placeholder="Author"
-            />
-          </div>
-          <div>
-            <p>Category</p>
-            <input
-              type="text"
-              name="category"
-              value={category}
-              onChange={this.handleChange}
-              placeholder="Category"
             />
           </div>
           <div>
@@ -108,7 +83,7 @@ export default class NewMessageEntry extends Component {
             />
           </div>
           <span>
-            <button type="submit" onClick={this.handleSubmit}>Post</button>
+            <button type="submit" onClick={this.handleSubmit}>Comment</button>
           </span>
         </div>
       </form>

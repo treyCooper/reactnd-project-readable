@@ -5,6 +5,8 @@ const GOT_SINGLE_POST = 'GOT_SINGLE_POST';
 const GOT_NEW_POST = 'GOT_NEW_POST';
 const EDIT_POST = 'EDIT_POST';
 const DELETE_POST = 'DELETE_POST';
+const GOT_COMMENTS = 'GOT_COMMENTS';
+const GOT_NEW_COMMENT = 'GOT_NEW_COMMENT';
 
 export const gotPosts = function (posts) {
   return {
@@ -41,6 +43,20 @@ export const deletePost = function (post) {
   }
 }
 
+export const gotComments = function (comments) {
+  return {
+    type: GOT_COMMENTS,
+    comments: comments
+  }
+}
+
+export const gotNewComment = function (comment) {
+  return {
+    type: GOT_NEW_COMMENT,
+    comment: comment
+  }
+}
+
 const initialState = {
   posts: [],
   singlePost: {},
@@ -72,6 +88,17 @@ function reducer (state = initialState, action) {
       case DELETE_POST:
         return {
           ...state, posts: state.posts.filter(post => post.id !== action.post.id), singlePost: {}
+        }
+
+      case GOT_COMMENTS:
+        return {
+          ...state, comments: action.comments
+        }
+
+        case GOT_NEW_COMMENT:
+        return {
+          ...state,
+          comments: [...state.comments, action.comment]
         }
 
     default:

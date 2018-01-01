@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Comment from './Comment';
 import Post from './Post';
-import store, { gotSinglePost, deletePost, editPost } from '../store';
+import NewComment from './NewComment';
+import store, { gotSinglePost, deletePost, editPost, gotComments } from '../store';
 
   export default class PostDetail extends Component {
 
@@ -29,7 +30,6 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
       }
 
     handleEdit (title, author, category, body, id) {
-
       const data = { title, author, category, body, id, timestamp: Date.now() };
       axios.put(`http://localhost:3001/posts/${id}`, data, {
         headers: {
@@ -41,7 +41,6 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
       .then(post => store.dispatch(editPost(post)))
     }
 
-
     handleDelete (id) {
       axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
       .then(res => res.data)
@@ -52,14 +51,24 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
       .then(() => window.history.back())
     }
 
-
+    HandleEditComment (title, author, category, body, id) {
+      const data = { title, author, category, body, id, timestamp: Date.now() };
+      axios.put(`http://localhost:3001/comments/${id}`, data, {
+        headers: {
+          'Authorization': 'readable-trey',
+          }
+        }
+      )
+      .then(res => res.data)
+      //.then(comment => store.dispatch(editComment(comment)))
+    }
       componentDidMount(){
         axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}`, { headers: { 'Authorization': 'readable-trey'}})
         .then(res => res.data)
         .then(post => {
         const action = gotSinglePost(post);
         store.dispatch(action)})
-        .then(() => this.getComments())
+        this.getComments()
         this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
 
     }
@@ -71,7 +80,9 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
       getComments = () => {
         axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}/comments`, { headers: { 'Authorization': 'readable-trey'}})
         .then(res => res.data)
-        .then(comments => this.setState({ comments }))
+        .then(comments => {
+          const action = gotComments(comments);
+          store.dispatch(action)})
         .catch(err => console.log('err',err))
       }
 
@@ -86,6 +97,7 @@ import store, { gotSinglePost, deletePost, editPost } from '../store';
           <ul>
             { comments.map(comment => <Comment comment={comment} key={comment.id} />) }
           </ul>
+          <NewComment parentId={post.id}/>
         </div>
       </div>
     )

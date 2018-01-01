@@ -34,7 +34,9 @@ export const deletePost = function (post) {
 }
 
 const initialState = {
-  posts: []
+  posts: [],
+  singlePost: {},
+  comments: {}
 }
 
 function reducer (state = initialState, action) {

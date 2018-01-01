@@ -20,7 +20,6 @@ export default class Post extends Component {
   }
 
 
-
     handleChange (evt) {
       const value = evt.target.value;
       this.setState({
@@ -30,7 +29,7 @@ export default class Post extends Component {
 
   render () {
     if (!this.state.showEditView) {
-  const { title, author, category, body, id } = this.props.post;
+  const { title, author, category, body, id, voteScore } = this.props.post;
   return  (
     <li>
       <div>
@@ -46,8 +45,14 @@ export default class Post extends Component {
         <h4>{ author }</h4>
         { body }
       </div>
+      <div>
+          <p>Score: {voteScore}</p>
+          <button onClick={() => this.props.handleVote(id, 'downVote')}>Down Vote</button>
+          <button onClick={() => this.props.handleVote(id, 'upVote')}>Up Vote</button>
+        </div>
       <button onClick={() => this.setState({showEditView: true})}>Edit</button>
       <button onClick={() => this.props.handleDelete(id)}>Delete</button>
+
       </li>
   )}
    else {

@@ -9,6 +9,7 @@ export default class RootPostsList extends Component {
   constructor () {
     super();
     this.state = store.getState();
+    this.handleVote = this.handleVote.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
@@ -29,6 +30,21 @@ export default class RootPostsList extends Component {
     this.unsubscribe();
   }
 
+  handleVote = (id, vote) => {
+    console.log('vote', vote)
+    const data = {
+      option: vote
+    }
+    axios.post(`http://localhost:3001/posts/${id}`, data, {
+      headers: {
+        'Authorization': 'readable-trey',
+        },
+      }
+    )
+    .then(res => res.data)
+    .then(post => store.dispatch(editPost(post)));
+    }
+
   handleEdit (title, author, category, body, id) {
 
     const data = { title, author, category, body, id, timestamp: Date.now() };
@@ -42,6 +58,7 @@ export default class RootPostsList extends Component {
     .then(res => res.data)
     .then(post => store.dispatch(editPost(post)))
   }
+
 
   handleDelete (id) {
     axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
@@ -60,7 +77,7 @@ export default class RootPostsList extends Component {
       <div>
         <ul>
           { posts.map(post => {
-          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit}/>
+          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
          })
         }
         </ul>

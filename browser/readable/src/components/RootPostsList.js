@@ -9,6 +9,7 @@ export default class RootPostsList extends Component {
   constructor () {
     super();
     this.state = store.getState();
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   componentDidMount(){
@@ -26,7 +27,9 @@ export default class RootPostsList extends Component {
     this.unsubscribe();
   }
 
-
+  handleEdit () {
+    this.setState(store.getState())
+  }
 
   render () {
 
@@ -37,7 +40,7 @@ export default class RootPostsList extends Component {
         <ul>
           { posts.map(post => {
             console.log('postId', post.id)
-          return <Post post={post} key={post.id} />
+          return <Post post={post} key={post.id} handleEdit={this.handleEdit}/>
          })
         }
         </ul>

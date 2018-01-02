@@ -45,7 +45,6 @@ export default class Post extends Component {
       <NavLink to={`/categories/${category}`}>
           <span>{ category }</span>
           </NavLink>
-
       </div>
       <div>
         <h4>{ author }</h4>
@@ -63,7 +62,6 @@ export default class Post extends Component {
   )}
    else {
     const { title, author, category, body } = this.state;
-    console.log('STATEE', this.state)
     const { id } = this.props.post
   return (
     <li>

@@ -19,6 +19,7 @@ export default class RootPostsList extends Component {
     axios.get('http://localhost:3001/posts', { headers: { 'Authorization': 'readable-trey' }})
       .then(res => res.data)
       .then(posts => {
+        posts = posts.filter(post => post.category === this.props.match.params.category)
         const action = gotPosts(posts);
         store.dispatch(action);
       })
@@ -76,15 +77,16 @@ export default class RootPostsList extends Component {
   render () {
     console.log(this.state.comments)
     const posts = this.state.posts;
+    const { category } = this.props.match.params
     return (
       <div>
-        <h1>All Posts</h1>
+        <h1>{ `${category.charAt(0).toUpperCase() + category.substr(1)} Posts`}</h1>
         <button onClick={() => this.handleSort('timestamp')}>Sort By Date</button>
         <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
         <ul>
-          { posts.map(post => {
+          { posts.length ? posts.map(post => {
           return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
-         })
+         }) : `There are currently no posts in the ${category} category.`
         }
         </ul>
         <NewPost />

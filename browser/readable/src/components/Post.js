@@ -16,7 +16,6 @@ export default class Post extends Component {
   }
 
   componentDidMount() {
-    console.log('PRRROOPPS', this.props)
     const { title, author, category, body } = this.props.post;
     this.setState(() => ({ title, category, author, body }))
   }

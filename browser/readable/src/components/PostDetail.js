@@ -116,13 +116,16 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
     const post = singlePost
     return (
       <div>
+        <ul>
         <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
+        </ul>
         <div >
           <h4>Comments</h4>
           <ul>
-            { comments.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
+            { comments.length ? comments.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
             handleEditComment={this.handleEditComment}
-            />) }
+            />) :
+            'This post has not received any comments'}
           </ul>
           <NewComment parentId={post.id} />
         </div>

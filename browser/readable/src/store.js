@@ -10,7 +10,7 @@ const GOT_COMMENTS = 'GOT_COMMENTS';
 const GOT_NEW_COMMENT = 'GOT_NEW_COMMENT';
 const DELETE_COMMENT = 'DELETE_COMMENT';
 const EDIT_COMMENT = 'EDIT_COMMENT';
-
+const GOT_CATEGORIES = 'GOT_CATEGORIES';
 
 export const sortPosts = function (sortParam) {
   return {
@@ -82,10 +82,18 @@ export const editComment = function (comment) {
   }
 }
 
+export const gotCategories = function (categories) {
+  return {
+    type: GOT_CATEGORIES,
+    categories: categories
+  }
+}
+
 const initialState = {
   posts: [],
   singlePost: {},
-  comments: []
+  comments: [],
+  categories: []
 }
 
 function reducer (state = initialState, action) {
@@ -142,6 +150,10 @@ function reducer (state = initialState, action) {
           ...state, comments: comments
         }
 
+      case GOT_CATEGORIES:
+        return {
+          ...state, categories: action.categories.categories
+        }
     default:
       return state
   }

@@ -11,7 +11,8 @@ export default class NewMessageEntry extends Component {
       title: '',
       category: '',
       author: '',
-      body: ''
+      body: '',
+      categories: []
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -89,13 +90,15 @@ export default class NewMessageEntry extends Component {
           </div>
           <div>
             <p>Category</p>
-            <input
-              type="text"
+            <select
               name="category"
               value={category}
-              onChange={this.handleChange}
-              placeholder="Category"
-            />
+              onChange={this.handleChange}>
+              {this.state.categories.map(category => <option key={category.path}  value={category.path}>
+                    {category.name}
+                    </option>
+                  )}
+            </select>
           </div>
           <div>
             <p>Body</p>

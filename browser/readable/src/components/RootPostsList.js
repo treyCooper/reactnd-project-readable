@@ -19,8 +19,7 @@ export default class RootPostsList extends Component {
     axios.get('http://localhost:3001/posts', { headers: { 'Authorization': 'readable-trey' }})
       .then(res => res.data)
       .then(posts => {
-        const filteredPosts = posts.filter(post => !post.disabled)
-        const action = gotPosts(filteredPosts);
+        const action = gotPosts(posts);
         store.dispatch(action);
       })
       .catch(err => console.log('err',err))
@@ -77,7 +76,6 @@ export default class RootPostsList extends Component {
   render () {
 
     const allPosts = this.state.posts;
-    console.log('routeprops', this.props.match.params.category)
     const { category } = this.props.match.params
     const posts = category ? allPosts.filter(post => post.category === category) : allPosts;
     return (

@@ -11,6 +11,7 @@ const GOT_NEW_COMMENT = 'GOT_NEW_COMMENT';
 const DELETE_COMMENT = 'DELETE_COMMENT';
 const EDIT_COMMENT = 'EDIT_COMMENT';
 const GOT_CATEGORIES = 'GOT_CATEGORIES';
+const SORT_COMMENTS = 'SORT_COMMENTS';
 
 export const sortPosts = function (sortParam) {
   return {
@@ -89,6 +90,13 @@ export const gotCategories = function (categories) {
   }
 }
 
+export const sortComments = function (sortParam) {
+  return {
+    type: SORT_COMMENTS,
+    sortParam
+  }
+}
+
 const initialState = {
   posts: [],
   singlePost: {},
@@ -101,6 +109,7 @@ function reducer (state = initialState, action) {
     case SORT_POSTS:
       const sortedPosts = state.posts.sort((a,b) => b[action.sortParam]-a[action.sortParam])
       return {...state, posts: sortedPosts}
+
     case GOT_POSTS:
       return {...state, posts: action.posts}
 
@@ -154,6 +163,10 @@ function reducer (state = initialState, action) {
         return {
           ...state, categories: action.categories.categories
         }
+      case SORT_COMMENTS:
+        const sortedComments = state.comments.sort((a,b) => b[action.sortParam]-a[action.sortParam])
+        return {...state, comments: sortedComments}
+
     default:
       return state
   }

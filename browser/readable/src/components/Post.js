@@ -58,8 +58,8 @@ export default class Post extends Component {
         </div>
       <button onClick={this.toEditView}>Edit</button>
       <button onClick={() => this.props.handleDelete(id)}>Delete</button>
-
       </li>
+
   )}
    else {
     const { title, author, category, body } = this.state;

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Comment from './Comment';
 import Post from './Post';
 import NewComment from './NewComment';
-import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment, editComment } from '../store';
+import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment, editComment, sortComments } from '../store';
 
   export default class PostDetail extends Component {
 
@@ -111,16 +111,24 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
         .catch(err => console.log('err',err))
       }
 
+      handleSort (sortParam) {
+        const action = sortComments(sortParam);
+        store.dispatch(action);
+      }
+
   render() {
     const { singlePost, comments } = this.state
     const post = singlePost
     return (
       <div>
         <ul>
-        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
+        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
+        numComments={comments.length}/>
         </ul>
         <div >
           <h4>Comments</h4>
+          <button onClick={() => this.handleSort('timestamp')}>Sort By Date</button>
+          <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
           <ul>
             { comments.length ? comments.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
             handleEditComment={this.handleEditComment}

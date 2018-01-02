@@ -37,7 +37,7 @@ export default class CategoryList extends Component {
         </div>
         <div>
         { categories.map(category => {
-        return (<div>
+        return (<div key={category.name}>
         <NavLink to={`/categories/${category.path}`}>
           <span>{category.name.charAt(0).toUpperCase() + category.name.substr(1)}</span>
           </NavLink>

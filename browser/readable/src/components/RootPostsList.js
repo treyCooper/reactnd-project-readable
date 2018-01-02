@@ -74,7 +74,7 @@ export default class RootPostsList extends Component {
   }
 
   render () {
-
+    console.log(this.state.comments)
     const allPosts = this.state.posts;
     const { category } = this.props.match.params
     const posts = category ? allPosts.filter(post => post.category === category) : allPosts;

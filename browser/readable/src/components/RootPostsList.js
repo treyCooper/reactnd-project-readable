@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
 import axios from 'axios';
-import store, { gotPosts, deletePost, editPost } from '../store';
+import store, { gotPosts, deletePost, editPost, sortPosts } from '../store';
 
 export default class RootPostsList extends Component {
 
   constructor () {
     super();
     this.state = store.getState();
-    this.handleVote = this.handleVote.bind(this);
+    this.handleVotePost = this.handleVotePost.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleSort= this.handleSort.bind(this);
   }
 
   componentDidMount(){
@@ -30,8 +31,7 @@ export default class RootPostsList extends Component {
     this.unsubscribe();
   }
 
-  handleVote = (id, vote) => {
-    console.log('vote', vote)
+  handleVotePost = (id, vote) => {
     const data = {
       option: vote
     }
@@ -69,6 +69,11 @@ export default class RootPostsList extends Component {
     })
   }
 
+  handleSort (sortParam) {
+    const action = sortPosts(sortParam);
+    store.dispatch(action);
+  }
+
   render () {
 
     const allPosts = this.state.posts;
@@ -78,9 +83,11 @@ export default class RootPostsList extends Component {
     return (
       <div>
         <h1>{category ? `${category.charAt(0).toUpperCase() + category.substr(1)} Posts` : 'All Posts'}</h1>
+        <button onClick={() => this.handleSort('timestamp')}>Sort By Date</button>
+        <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
         <ul>
           { posts.length ? posts.map(post => {
-          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
+          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
          }) : `There are currently no posts in the ${category} category.`
         }
         </ul>

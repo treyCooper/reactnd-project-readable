@@ -1,5 +1,6 @@
 import { createStore } from 'redux';
 
+const SORT_POSTS = 'SORT_POSTS';
 const GOT_POSTS = 'GOT_POSTS';
 const GOT_SINGLE_POST = 'GOT_SINGLE_POST';
 const GOT_NEW_POST = 'GOT_NEW_POST';
@@ -9,6 +10,14 @@ const GOT_COMMENTS = 'GOT_COMMENTS';
 const GOT_NEW_COMMENT = 'GOT_NEW_COMMENT';
 const DELETE_COMMENT = 'DELETE_COMMENT';
 const EDIT_COMMENT = 'EDIT_COMMENT';
+
+
+export const sortPosts = function (sortParam) {
+  return {
+    type: SORT_POSTS,
+    sortParam
+  }
+}
 
 export const gotPosts = function (posts) {
   return {
@@ -81,6 +90,9 @@ const initialState = {
 
 function reducer (state = initialState, action) {
   switch (action.type) {
+    case SORT_POSTS:
+      const sortedPosts = state.posts.sort((a,b) => b[action.sortParam]-a[action.sortParam])
+      return {...state, posts: sortedPosts}
     case GOT_POSTS:
       return {...state, posts: action.posts}
 

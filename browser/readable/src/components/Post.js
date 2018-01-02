@@ -54,8 +54,8 @@ export default class Post extends Component {
       </div>
       <div>
           <p>Score: {voteScore}</p>
-          <button onClick={() => this.props.handleVote(id, 'downVote')}>Down Vote</button>
-          <button onClick={() => this.props.handleVote(id, 'upVote')}>Up Vote</button>
+          <button onClick={() => this.props.handleVotePost(id, 'downVote')}>Down Vote</button>
+          <button onClick={() => this.props.handleVotePost(id, 'upVote')}>Up Vote</button>
         </div>
       <button onClick={this.toEditView}>Edit</button>
       <button onClick={() => this.props.handleDelete(id)}>Delete</button>

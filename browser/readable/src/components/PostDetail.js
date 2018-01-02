@@ -3,19 +3,21 @@ import axios from 'axios';
 import Comment from './Comment';
 import Post from './Post';
 import NewComment from './NewComment';
-import store, { gotSinglePost, deletePost, editPost, gotComments } from '../store';
+import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment, editComment } from '../store';
 
   export default class PostDetail extends Component {
 
     constructor () {
       super();
       this.state = store.getState();
-      this.handleVote = this.handleVote.bind(this);
+      this.handleVotePost = this.handleVotePost.bind(this);
       this.handleEdit = this.handleEdit.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
+      this.handleDeleteComment = this.handleDeleteComment.bind(this);
+      this.handleEditComment = this.handleEditComment.bind(this);
     }
 
-    handleVote = (id, vote) => {
+    handleVotePost = (id, vote) => {
       const data = {
         option: vote
       }
@@ -28,6 +30,20 @@ import store, { gotSinglePost, deletePost, editPost, gotComments } from '../stor
       .then(res => res.data)
       .then(post => store.dispatch(editPost(post)));
       }
+
+      handleVoteComment = (id, vote) => {
+        const data = {
+          option: vote
+        }
+        axios.post(`http://localhost:3001/comments/${id}`, data, {
+          headers: {
+            'Authorization': 'readable-trey',
+            },
+          }
+        )
+        .then(res => res.data)
+        .then(comment => store.dispatch(editComment(comment)));
+        }
 
     handleEdit (title, author, category, body, id) {
       const data = { title, author, category, body, id, timestamp: Date.now() };
@@ -51,8 +67,8 @@ import store, { gotSinglePost, deletePost, editPost, gotComments } from '../stor
       .then(() => window.history.back())
     }
 
-    HandleEditComment (title, author, category, body, id) {
-      const data = { title, author, category, body, id, timestamp: Date.now() };
+    handleEditComment (author,body, id) {
+      const data = { author, body, id, timestamp: Date.now() };
       axios.put(`http://localhost:3001/comments/${id}`, data, {
         headers: {
           'Authorization': 'readable-trey',
@@ -60,7 +76,16 @@ import store, { gotSinglePost, deletePost, editPost, gotComments } from '../stor
         }
       )
       .then(res => res.data)
-      //.then(comment => store.dispatch(editComment(comment)))
+      .then(comment => store.dispatch(editComment(comment)))
+    }
+
+    handleDeleteComment (id) {
+      axios.delete(`http://localhost:3001/comments/${id}`, { headers: { 'Authorization': 'readable-trey' }})
+      .then(res => res.data)
+      .then(deletedComment => {
+        const action = deleteComment(deletedComment);
+        store.dispatch(action);
+      })
     }
       componentDidMount(){
         axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}`, { headers: { 'Authorization': 'readable-trey'}})
@@ -91,13 +116,15 @@ import store, { gotSinglePost, deletePost, editPost, gotComments } from '../stor
     const post = singlePost
     return (
       <div>
-        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVote={this.handleVote}/>
+        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
         <div >
           <h4>Comments</h4>
           <ul>
-            { comments.map(comment => <Comment comment={comment} key={comment.id} />) }
+            { comments.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
+            handleEditComment={this.handleEditComment}
+            />) }
           </ul>
-          <NewComment parentId={post.id}/>
+          <NewComment parentId={post.id} />
         </div>
       </div>
     )

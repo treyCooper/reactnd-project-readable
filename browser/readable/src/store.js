@@ -7,6 +7,8 @@ const EDIT_POST = 'EDIT_POST';
 const DELETE_POST = 'DELETE_POST';
 const GOT_COMMENTS = 'GOT_COMMENTS';
 const GOT_NEW_COMMENT = 'GOT_NEW_COMMENT';
+const DELETE_COMMENT = 'DELETE_COMMENT';
+const EDIT_COMMENT = 'EDIT_COMMENT';
 
 export const gotPosts = function (posts) {
   return {
@@ -57,6 +59,20 @@ export const gotNewComment = function (comment) {
   }
 }
 
+export const deleteComment = function (comment) {
+  return {
+    type: DELETE_COMMENT,
+    comment: comment
+  }
+}
+
+export const editComment = function (comment) {
+  return {
+    type: EDIT_COMMENT,
+    comment: comment
+  }
+}
+
 const initialState = {
   posts: [],
   singlePost: {},
@@ -95,10 +111,23 @@ function reducer (state = initialState, action) {
           ...state, comments: action.comments
         }
 
-        case GOT_NEW_COMMENT:
+      case GOT_NEW_COMMENT:
         return {
           ...state,
           comments: [...state.comments, action.comment]
+        }
+
+      case DELETE_COMMENT:
+        return {
+          ...state, comments: state.comments.filter(comment => comment.id !== action.comment.id)
+        }
+
+      case EDIT_COMMENT:
+        const comments = state.comments.map(comment => (
+          action.comment.id === comment.id ? action.comment : comment
+        ));
+        return {
+          ...state, comments: comments
         }
 
     default:

@@ -3,6 +3,7 @@ import axios from 'axios';
 import Comment from './Comment';
 import Post from './Post';
 import NewComment from './NewComment';
+import PostNotFound from './PostNotFound';
 import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment, editComment, sortComments } from '../store';
 
   export default class PostDetail extends Component {
@@ -119,7 +120,9 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
   render() {
     const { singlePost, comments } = this.state
     const post = singlePost
-    return (
+    console.log('singlePPOSTT', post)
+   return singlePost.title ?
+     (
       <div>
         <ul>
         <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
@@ -138,6 +141,10 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
           <NewComment parentId={post.id} />
         </div>
       </div>
+    )
+    :
+     (
+      <PostNotFound />
     )
   }
 }

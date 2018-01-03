@@ -36,6 +36,8 @@ export default class Post extends Component {
   render () {
     if (!this.state.showEditView) {
   const { title, author, category, body, id, voteScore } = this.props.post;
+  const { numComments } = this.props
+
   return  (
     <li>
       <div>
@@ -49,6 +51,11 @@ export default class Post extends Component {
       <div>
         <h4>{ author }</h4>
         { body }
+      </div>
+      <div>
+        <p>
+       {numComments === 1 ? `${numComments} comment` : `${numComments} comments` }
+        </p>
       </div>
       <div>
           <p>Score: {voteScore}</p>

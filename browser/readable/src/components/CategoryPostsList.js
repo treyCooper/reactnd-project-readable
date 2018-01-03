@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
 import axios from 'axios';
-import store, { gotPosts, deletePost, editPost, sortPosts } from '../store';
+import store, { deletePost, editPost, sortPosts } from '../store';
 
 export default class RootPostsList extends Component {
 
@@ -16,14 +16,6 @@ export default class RootPostsList extends Component {
   }
 
   componentDidMount(){
-    axios.get('http://localhost:3001/posts', { headers: { 'Authorization': 'readable-trey' }})
-      .then(res => res.data)
-      .then(posts => {
-        posts = posts.filter(post => post.category === this.props.match.params.category)
-        const action = gotPosts(posts);
-        store.dispatch(action);
-      })
-      .catch(err => console.log('err',err))
     this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
   }
 
@@ -48,7 +40,6 @@ export default class RootPostsList extends Component {
   handleEdit (title, author, category, body, id) {
 
     const data = { title, author, category, body, id, timestamp: Date.now() };
-    console.log('data', data)
   axios.put(`http://localhost:3001/posts/${id}`, data, {
       headers: {
         'Authorization': 'readable-trey',
@@ -75,9 +66,11 @@ export default class RootPostsList extends Component {
   }
 
   render () {
-    console.log(this.state.comments)
-    const posts = this.state.posts;
-    const { category } = this.props.match.params
+    const comments = this.state.comments;
+    const allPosts = this.state.posts;
+    const { category } = this.props.match.params;
+    const posts = allPosts.filter(post => post.category === this.props.match.params.category)
+
     return (
       <div>
         <h1>{ `${category.charAt(0).toUpperCase() + category.substr(1)} Posts`}</h1>
@@ -85,7 +78,9 @@ export default class RootPostsList extends Component {
         <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
         <ul>
           { posts.length ? posts.map(post => {
-          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
+          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
+          numComments={comments.filter(comment => comment.parentId === post.id).length}
+          />
          }) : `There are currently no posts in the ${category} category.`
         }
         </ul>

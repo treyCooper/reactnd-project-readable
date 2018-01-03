@@ -5,7 +5,13 @@ import CategoryList from './components/CategoryList';
 import PostDetail from './components/PostDetail';
 import CategoryPostsList from './components/CategoryPostsList';
 import { Route, Switch } from 'react-router-dom';
+import store, { initializeState } from './store';
+
 class App extends Component {
+  componentDidMount () {
+    const thunk = initializeState();
+    store.dispatch(thunk);
+  }
 
   render() {
     return (

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
 import axios from 'axios';
-import store, { gotPosts, deletePost, editPost, sortPosts } from '../store';
+import store, { deletePost, editPost, sortPosts } from '../store';
 
 export default class RootPostsList extends Component {
 
@@ -16,13 +16,7 @@ export default class RootPostsList extends Component {
   }
 
   componentDidMount(){
-    axios.get('http://localhost:3001/posts', { headers: { 'Authorization': 'readable-trey' }})
-      .then(res => res.data)
-      .then(posts => {
-        const action = gotPosts(posts);
-        store.dispatch(action);
-      })
-      .catch(err => console.log('err',err))
+
     this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
   }
 
@@ -74,8 +68,8 @@ export default class RootPostsList extends Component {
   }
 
   render () {
-    console.log(this.state.comments)
-    const posts = this.state.posts;
+    console.log(this.state)
+    const { posts, comments } = this.state;
     return (
       <div>
         <h1>All Posts</h1>
@@ -83,7 +77,9 @@ export default class RootPostsList extends Component {
         <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
         <ul>
           { posts.map(post => {
-          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}/>
+          return <Post post={post} key={post.id} handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
+          numComments={comments.filter(comment => comment.parentId === post.id).length}
+          />
          })
         }
         </ul>

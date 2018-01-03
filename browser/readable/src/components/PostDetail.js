@@ -4,7 +4,7 @@ import Comment from './Comment';
 import Post from './Post';
 import NewComment from './NewComment';
 import PostNotFound from './PostNotFound';
-import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment, editComment, sortComments } from '../store';
+import store, { deletePost, editPost, deleteComment, editComment, sortComments } from '../store';
 
   export default class PostDetail extends Component {
 
@@ -89,12 +89,7 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
       })
     }
       componentDidMount(){
-        axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}`, { headers: { 'Authorization': 'readable-trey'}})
-        .then(res => res.data)
-        .then(post => {
-        const action = gotSinglePost(post);
-        store.dispatch(action)})
-        this.getComments()
+
         this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
 
     }
@@ -103,14 +98,6 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
       this.unsubscribe();
     }
 
-      getComments = () => {
-        axios.get(`http://localhost:3001/posts/${this.props.match.params.post_id}/comments`, { headers: { 'Authorization': 'readable-trey'}})
-        .then(res => res.data)
-        .then(comments => {
-          const action = gotComments(comments);
-          store.dispatch(action)})
-        .catch(err => console.log('err',err))
-      }
 
       handleSort (sortParam) {
         const action = sortComments(sortParam);
@@ -118,27 +105,27 @@ import store, { gotSinglePost, deletePost, editPost, gotComments, deleteComment,
       }
 
   render() {
-    const { singlePost, comments } = this.state
-    const post = singlePost
-    console.log('singlePPOSTT', post)
-   return singlePost.title ?
+    const { posts, comments } = this.state
+    const post = posts.filter(post => post.id === this.props.match.params.post_id)
+    const commentsOnPost = comments.filter(comment => comment.parentId === this.props.match.params.post_id)
+   return post[0] ?
      (
       <div>
         <ul>
-        <Post post={post}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
-        numComments={comments.length}/>
+        <Post post={post[0]}  handleDelete={this.handleDelete} handleEdit={this.handleEdit} handleVotePost={this.handleVotePost}
+        numComments={commentsOnPost.length}/>
         </ul>
         <div >
           <h4>Comments</h4>
           <button onClick={() => this.handleSort('timestamp')}>Sort By Date</button>
           <button onClick={() => this.handleSort('voteScore')}>Sort By Score</button>
           <ul>
-            { comments.length ? comments.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
+            { commentsOnPost.length ? commentsOnPost.map(comment => <Comment comment={comment} key={comment.id} handleVoteComment={this.handleVoteComment}handleDeleteComment={this.handleDeleteComment}
             handleEditComment={this.handleEditComment}
             />) :
             'This post has not received any comments'}
           </ul>
-          <NewComment parentId={post.id} />
+          <NewComment parentId={post[0].id} />
         </div>
       </div>
     )

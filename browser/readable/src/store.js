@@ -1,4 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import axios from 'axios';
 
 const SORT_POSTS = 'SORT_POSTS';
 const GOT_POSTS = 'GOT_POSTS';
@@ -96,6 +98,41 @@ export const sortComments = function (sortParam) {
     sortParam
   }
 }
+export function fetchPosts () {
+
+    return function thunk (dispatch) {
+
+      return axios.get('http://localhost:3001/posts', { headers: { 'Authorization': 'readable-trey' }})
+      .then(res => res.data)
+      .then(posts => {
+        const action = gotPosts(posts);
+        store.dispatch(action)
+        return posts
+      })
+  }
+}
+
+export function fetchComments (id) {
+
+      return function thunk (dispatch) {
+        axios.get(`http://localhost:3001/posts/${id}/comments`, { headers: { 'Authorization': 'readable-trey'}})
+        .then(res => res.data)
+        .then(comments => {
+          const action = gotComments(comments);
+          store.dispatch(action)
+          console.log('commtest', comments)
+      })
+    }
+  }
+
+export function initializeState () {
+
+    return function thunk (dispatch) {
+      store.dispatch(fetchPosts()).then((posts) => {
+        posts.map(post => store.dispatch(fetchComments(post.id)))
+      })
+    }
+}
 
 const initialState = {
   posts: [],
@@ -137,7 +174,7 @@ function reducer (state = initialState, action) {
 
       case GOT_COMMENTS:
         return {
-          ...state, comments: action.comments
+          ...state, comments: [...state.comments, ...action.comments]
         }
 
       case GOT_NEW_COMMENT:
@@ -172,5 +209,5 @@ function reducer (state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 export default store;

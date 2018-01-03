@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import store, { gotNewComment } from '../store';
+import store, { addCommentFunc } from '../store';
 import uuid from 'uuid';
-import axios from 'axios';
+
 
 export default class NewMessageEntry extends Component {
 
@@ -42,15 +42,9 @@ export default class NewMessageEntry extends Component {
       parentId: this.props.parentId
   }
 
-  axios.post('http://localhost:3001/comments', data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        }
-      }
-    )
-    .then(res => res.data)
-    .then(comment => store.dispatch(gotNewComment(comment)))
-    .then(() => this.setState({
+  const thunk = addCommentFunc(data);
+  store.dispatch(thunk)
+  .then(() => this.setState({
       author: '',
       body: ''
     }))

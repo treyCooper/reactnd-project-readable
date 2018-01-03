@@ -98,6 +98,19 @@ export const sortComments = function (sortParam) {
     sortParam
   }
 }
+
+export function fetchCategories () {
+
+      return function thunk (dispatch) {
+        return  axios.get('http://localhost:3001/categories', { headers: { 'Authorization': 'readable-trey' }})
+        .then(res => res.data)
+        .then(categories => {
+          const action = gotCategories(categories);
+          store.dispatch(action);
+        })
+  }
+}
+
 export function fetchPosts () {
 
     return function thunk (dispatch) {
@@ -128,11 +141,129 @@ export function fetchComments (id) {
 export function initializeState () {
 
     return function thunk (dispatch) {
-      store.dispatch(fetchPosts()).then((posts) => {
+      store.dispatch(fetchCategories())
+      store.dispatch(fetchPosts())
+      .then((posts) => {
         posts.map(post => store.dispatch(fetchComments(post.id)))
       })
     }
 }
+
+export function deletePostFunc (id) {
+
+      return function thunk (dispatch) {
+        return axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
+        .then(res => res.data)
+        .then(deletedPost => {
+          const action = deletePost(deletedPost);
+          store.dispatch(action);
+        })
+  }
+}
+
+export function addPostFunc (data) {
+
+        return function thunk (dispatch) {
+          return  axios.post('http://localhost:3001/posts', data, {
+            headers: {
+              'Authorization': 'readable-trey',
+              }
+            }
+          )
+          .then(res => res.data)
+          .then(post => store.dispatch(gotNewPost(post)))
+  }
+}
+
+export function addCommentFunc (data) {
+
+          return function thunk (dispatch) {
+            return  axios.post('http://localhost:3001/comments', data, {
+              headers: {
+                'Authorization': 'readable-trey',
+                }
+              }
+            )
+            .then(res => res.data)
+            .then(comment => store.dispatch(gotNewComment(comment)))
+    }
+  }
+
+export function editPostFunc (data, id) {
+
+    return function thunk (dispatch) {
+      console.log('ddata', data, 'id', id)
+      return axios.put(`http://localhost:3001/posts/${id}`, data, {
+        headers: {
+          'Authorization': 'readable-trey',
+          }
+        }
+      )
+      .then(res => res.data)
+      .then(post => {
+        store.dispatch(editPost(post))})
+
+  }
+}
+
+export function editPostScoreFunc (data, id) {
+
+      return function thunk (dispatch) {
+        return axios.post(`http://localhost:3001/posts/${id}`, data, {
+          headers: {
+            'Authorization': 'readable-trey',
+            }
+          }
+        )
+        .then(res => res.data)
+        .then(post => {
+          store.dispatch(editPost(post))
+        })
+
+    }
+  }
+
+  export function editCommentScoreFunc (data, id) {
+
+          return function thunk (dispatch) {
+            return axios.post(`http://localhost:3001/comments/${id}`, data, {
+              headers: {
+                'Authorization': 'readable-trey',
+                },
+              }
+            )
+            .then(res => res.data)
+            .then(comment => store.dispatch(editComment(comment)));
+
+        }
+      }
+
+export function editCommentFunc (data, id) {
+
+      return function thunk (dispatch) {
+        return axios.put(`http://localhost:3001/comments/${id}`, data, {
+          headers: {
+            'Authorization': 'readable-trey',
+            }
+          }
+        )
+        .then(res => res.data)
+        .then(comment => store.dispatch(editComment(comment)))
+
+    }
+  }
+
+export function deleteCommentFunc (id) {
+
+        return function thunk (dispatch) {
+          return axios.delete(`http://localhost:3001/comments/${id}`, { headers: { 'Authorization': 'readable-trey' }})
+          .then(res => res.data)
+          .then(deletedComment => {
+            const action = deleteComment(deletedComment);
+            store.dispatch(action);
+          })
+    }
+  }
 
 const initialState = {
   posts: [],

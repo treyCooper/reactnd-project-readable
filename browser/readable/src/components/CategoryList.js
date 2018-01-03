@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import store, { gotCategories } from '../store';
-import axios from 'axios';
+import store from '../store';
 
 const ALL = '/';
 
@@ -12,13 +11,7 @@ export default class CategoryList extends Component {
   }
 
   componentDidMount(){
-    axios.get('http://localhost:3001/categories', { headers: { 'Authorization': 'readable-trey' }})
-      .then(res => res.data)
-      .then(categories => {
-        const action = gotCategories(categories);
-        store.dispatch(action);
-      })
-      .catch(err => console.log('err',err))
+
     this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
   }
 

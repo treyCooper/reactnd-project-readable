@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Comment from './Comment';
 import Post from './Post';
 import NewComment from './NewComment';
 import PostNotFound from './PostNotFound';
-import store, { deletePost, editPost, deleteComment, editComment, sortComments } from '../store';
+import store, { deletePostFunc, editPostFunc, editPostScoreFunc, deleteCommentFunc, editCommentFunc, editCommentScoreFunc, sortComments } from '../store';
 
   export default class PostDetail extends Component {
 
@@ -22,71 +21,41 @@ import store, { deletePost, editPost, deleteComment, editComment, sortComments }
       const data = {
         option: vote
       }
-      axios.post(`http://localhost:3001/posts/${id}`, data, {
-        headers: {
-          'Authorization': 'readable-trey',
-          },
-        }
-      )
-      .then(res => res.data)
-      .then(post => store.dispatch(editPost(post)));
+      const thunk = editPostScoreFunc(data, id);
+      store.dispatch(thunk);
       }
 
       handleVoteComment = (id, vote) => {
         const data = {
           option: vote
         }
-        axios.post(`http://localhost:3001/comments/${id}`, data, {
-          headers: {
-            'Authorization': 'readable-trey',
-            },
-          }
-        )
-        .then(res => res.data)
-        .then(comment => store.dispatch(editComment(comment)));
+        const thunk = editCommentScoreFunc(data, id);
+        store.dispatch(thunk);
         }
 
     handleEdit (title, author, category, body, id) {
-      const data = { title, author, category, body, id, timestamp: Date.now() };
-      axios.put(`http://localhost:3001/posts/${id}`, data, {
-        headers: {
-          'Authorization': 'readable-trey',
-          }
-        }
-      )
-      .then(res => res.data)
-      .then(post => store.dispatch(editPost(post)))
+
+        const data = { title, author, category, body, id, timestamp: Date.now() };
+
+        const thunk = editPostFunc(data, id);
+        store.dispatch(thunk);
     }
 
     handleDelete (id) {
-      axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
-      .then(res => res.data)
-      .then(deletedPost => {
-        const action = deletePost(deletedPost);
-        store.dispatch(action);
-      })
+      const thunk = deletePostFunc(id);
+      store.dispatch(thunk)
       .then(() => window.history.back())
     }
 
     handleEditComment (author,body, id) {
       const data = { author, body, id, timestamp: Date.now() };
-      axios.put(`http://localhost:3001/comments/${id}`, data, {
-        headers: {
-          'Authorization': 'readable-trey',
-          }
-        }
-      )
-      .then(res => res.data)
-      .then(comment => store.dispatch(editComment(comment)))
+      const thunk = editCommentFunc(data, id);
+      store.dispatch(thunk);
     }
 
     handleDeleteComment (id) {
-      axios.delete(`http://localhost:3001/comments/${id}`, { headers: { 'Authorization': 'readable-trey' }})
-      .then(res => res.data)
-      .then(deletedComment => {
-        const action = deleteComment(deletedComment);
-        store.dispatch(action);
-      })
+      const thunk = deleteCommentFunc(id);
+      store.dispatch(thunk)
     }
       componentDidMount(){
 

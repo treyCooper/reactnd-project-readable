@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import store, { gotNewPost } from '../store';
+import store, { addPostFunc } from '../store';
 import uuid from 'uuid';
-import axios from 'axios';
 
-export default class NewMessageEntry extends Component {
 
-  constructor() {
-    super();
+export default class NewPost extends Component {
+
+  constructor(props) {
+    super(props);
     this.state = {
       title: '',
       category: '',
       author: '',
       body: '',
-      categories: []
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -46,15 +45,9 @@ export default class NewMessageEntry extends Component {
       id: uuid()
   }
 
-  axios.post('http://localhost:3001/posts', data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        }
-      }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(gotNewPost(post)))
-    .then(() => this.setState({
+  const thunk = addPostFunc(data);
+  store.dispatch(thunk)
+  .then(() => this.setState({
       title: '',
       category: '',
       author: '',
@@ -94,7 +87,7 @@ export default class NewMessageEntry extends Component {
               name="category"
               value={category}
               onChange={this.handleChange}>
-              {this.state.categories.map(category => <option key={category.path}  value={category.path}>
+              {this.props.categories.map(category => <option key={category.path}  value={category.path}>
                     {category.name}
                     </option>
                   )}

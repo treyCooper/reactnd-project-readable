@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
-import axios from 'axios';
-import store, { deletePost, editPost, sortPosts } from '../store';
+import store, { deletePostFunc, editPostFunc, editPostScoreFunc,  sortPosts } from '../store';
 
 export default class RootPostsList extends Component {
 
@@ -28,38 +27,22 @@ export default class RootPostsList extends Component {
     const data = {
       option: vote
     }
-    axios.post(`http://localhost:3001/posts/${id}`, data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        },
-      }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(editPost(post)));
+    const thunk = editPostScoreFunc(data, id);
+    store.dispatch(thunk);
     }
 
   handleEdit (title, author, category, body, id) {
 
     const data = { title, author, category, body, id, timestamp: Date.now() };
-    console.log('data', data)
-  axios.put(`http://localhost:3001/posts/${id}`, data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        }
-      }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(editPost(post)))
+
+    const thunk = editPostFunc(data, id);
+    store.dispatch(thunk);
   }
 
 
   handleDelete (id) {
-    axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
-    .then(res => res.data)
-    .then(deletedPost => {
-      const action = deletePost(deletedPost);
-      store.dispatch(action);
-    })
+    const thunk = deletePostFunc(id);
+    store.dispatch(thunk);
   }
 
   handleSort (sortParam) {
@@ -69,7 +52,7 @@ export default class RootPostsList extends Component {
 
   render () {
     console.log(this.state)
-    const { posts, comments } = this.state;
+    const { posts, comments, categories } = this.state;
     return (
       <div>
         <h1>All Posts</h1>
@@ -83,7 +66,7 @@ export default class RootPostsList extends Component {
          })
         }
         </ul>
-        <NewPost />
+        <NewPost categories={categories}/>
       </div>
     );
   }

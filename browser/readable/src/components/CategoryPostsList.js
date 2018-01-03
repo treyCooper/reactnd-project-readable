@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Post from './Post';
 import NewPost from './NewPost';
-import axios from 'axios';
-import store, { deletePost, editPost, sortPosts } from '../store';
+import store, { deletePostFunc, editPostFunc, editPostScoreFunc, sortPosts } from '../store';
 
 export default class RootPostsList extends Component {
 
@@ -24,40 +23,27 @@ export default class RootPostsList extends Component {
   }
 
   handleVotePost = (id, vote) => {
+    console.log('vote', vote)
     const data = {
       option: vote
     }
-    axios.post(`http://localhost:3001/posts/${id}`, data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        },
-      }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(editPost(post)));
+    const thunk = editPostScoreFunc(data, id);
+    store.dispatch(thunk);
     }
+
 
   handleEdit (title, author, category, body, id) {
 
-    const data = { title, author, category, body, id, timestamp: Date.now() };
-  axios.put(`http://localhost:3001/posts/${id}`, data, {
-      headers: {
-        'Authorization': 'readable-trey',
-        }
+        const data = { title, author, category, body, id, timestamp: Date.now() };
+
+        const thunk = editPostFunc(data, id);
+        store.dispatch(thunk);
       }
-    )
-    .then(res => res.data)
-    .then(post => store.dispatch(editPost(post)))
-  }
 
 
   handleDelete (id) {
-    axios.delete(`http://localhost:3001/posts/${id}`, { headers: { 'Authorization': 'readable-trey' }})
-    .then(res => res.data)
-    .then(deletedPost => {
-      const action = deletePost(deletedPost);
-      store.dispatch(action);
-    })
+    const thunk = deletePostFunc(id);
+    store.dispatch(thunk);
   }
 
   handleSort (sortParam) {
@@ -66,7 +52,7 @@ export default class RootPostsList extends Component {
   }
 
   render () {
-    const comments = this.state.comments;
+    const { comments, categories } = this.state;
     const allPosts = this.state.posts;
     const { category } = this.props.match.params;
     const posts = allPosts.filter(post => post.category === this.props.match.params.category)
@@ -84,7 +70,7 @@ export default class RootPostsList extends Component {
          }) : `There are currently no posts in the ${category} category.`
         }
         </ul>
-        <NewPost />
+        <NewPost categories={categories} />
       </div>
     );
   }
